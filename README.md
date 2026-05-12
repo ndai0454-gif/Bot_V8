@@ -1,71 +1,111 @@
-🏆 BotVang V10 — Advanced AI Quantitative Trading System
-BotVang V10 là một hệ thống giao dịch tự động (Expert Advisor) chuyên sâu cho MetaTrader 5, kết hợp sức mạnh tính toán của C++ DLL, khả năng học máy của Python và chiến lược quản lý vốn nghiêm ngặt của MQL5.
+# 🏆 GoldBotV9 - AI-Powered Gold Trading System
 
-Phiên bản V10 tập trung giải quyết vấn đề Symmetry (Đối xứng) trong dự báo tài chính và tối ưu hóa hiệu suất thực thi cho các tài sản biến động mạnh, đặc biệt là XAUUSD (Vàng).
+![Version](https://img.shields.io/badge/Version-V9-gold) 
+![Python](https://img.shields.io/badge/Python-3.12-blue) 
+![MT5](https://img.shields.io/badge/Platform-MetaTrader%205-green)
+![AI](https://img.shields.io/badge/AI-XGBoost%20%26%20Gemini-red)
 
-🛠 System Structure
-Hệ thống được thiết kế theo kiến trúc Hybrid (Lai), tách biệt giữa huấn luyện, tính toán và thực thi:
+GoldBotV9 là một hệ thống giao dịch tự động tiên tiến cho cặp **XAUUSD (Vàng)**. Hệ thống kết hợp giữa phân tích kỹ thuật Machine Learning, phân tích vĩ mô thông qua LLM (Gemini AI) và khả năng thực thi tốc độ cao trên nền tảng MetaTrader 5.
 
+---
 
-Apply
-BotVang_V10/
-├── python/                 # AI Training Pipeline
-│   ├── features_v10.py     # Feature Engineering & Robust Scaling
-│   ├── train_v10.py        # Multi-class One-vs-Rest Training
-│   └── ai_model_v10.txt    # Exported Weights & Scaler Params
-├── cpp_dll/                 # High-Performance Inference Engine
-│   ├── ai_engine_v10.cpp   # Multi-class Inference Engine (Optimized)
-│   ├── ai_engine_v10.sln   # Visual Studio Solution
-│   └── x64/Release/
-│       └── ai_engine_v10.dll # Compiled Binary
-├── mt5/                    # Trading Execution Layer
-│   ├── Experts/
-│   │   └── BotVang_V10.mq5 # Main EA Logic
-│   ├── Libraries/
-│   │   └── ai_engine_v10.dll # AI Engine DLL
-│   └── Files/
-│       └── ai_model_v10.txt   # Trained Model File
-└── docs/                   # Documentation
-└── readme.md               # Project Guide
-🧠 Core Logic & Innovations (V10)
-1. Multi-Class Symmetry Fix
-Thay vì phân loại nhị phân (Buy/Not-Buy) dễ gây nhiễu, V10 sử dụng mô hình Multi-class One-vs-Rest với 3 lớp dự báo:
+## 🏗 Kiến Trúc Hệ Thống (Architecture)
 
-Buy (1) | Sell (-1) | Neutral (0)
-Logic: Lệnh chỉ được thực thi khi xác suất của lớp Buy hoặc Sell vượt trội hoàn toàn so với lớp Neutral và đạt ngưỡng Confidence tối thiểu. Điều này loại bỏ hiện tượng vào lệnh sai trong vùng Sideway.
-2. Robust Feature Engineering
-ATR-Normalized Returns: Chuyển đổi lợi nhuận sang đơn vị ATR giúp AI hiểu biến động tương đối, tránh bị đánh lừa bởi các cú spike giá.
-Robust Scaler: Sử dụng Median và Interquartile Range (IQR) thay vì Mean/Std để triệt tiêu ảnh hưởng của các nến tin tức cực đoan (outliers).
-Session Encoding: Tích hợp dữ liệu phiên giao dịch (London/New York) để nhận diện đặc tính biến động theo thời gian.
-3. Realistic PnL Simulation
-Slippage Awareness: Trong huấn luyện, mỗi lệnh sai được tính là -1.3 đơn vị (thay vì -1.0) để mô phỏng chính xác chi phí Spread, Slippage và Commission thực tế của Vàng.
-4. Professional Risk Management
-Confidence-Based Lot Sizing: Khối lượng lệnh tự động điều chỉnh theo độ tự tin của AI ($\text{Prob} > 0.33$).
-Multi-stage Exit: Chốt lời từng phần 3 bậc dựa trên ATR và Trailing Stop thích ứng.
-Equity Guards: Bảo vệ tài khoản 3 lớp: Daily Loss $\rightarrow$ Weekly Loss $\rightarrow$ Floating Equity Drawdown.
-🚀 Installation & Deployment
-Step 1: Train the AI Model (Python)
-Cài đặt thư viện:
-Run
-pip install numpy pandas scikit-learn
-Chuẩn bị file dữ liệu XAUUSD_H1.csv (cột: open, high, low, close, tick_volume, spread).
-Chạy huấn luyện:
-Run
-python python/train_v10.py
-Copy file ai_model_v10.txt vào thư mục MQL5\Files\.
-Step 2: Build the AI Engine (C++)
-Mở ai_engine_v10.sln bằng Visual Studio 2022.
-Chọn cấu hình: Release và nền tảng x64.
-Nhấn Ctrl + Shift + B để Build.
-Copy file ai_engine_v10.dll vào thư mục MQL5\Libraries\.
-Step 3: Setup MetaTrader 5
-Copy BotVang_V10.mq5 vào MQL5\Experts\.
-Vào Tools $\rightarrow$ Options $\rightarrow$ Expert Advisors $\rightarrow$ Tích chọn "Allow DLL imports".
-Kéo Bot vào biểu đồ XAUUSD, khung thời gian H1.
-📊 Parameter Guide
-| Input | Description | Recommended | | :--- | :--- | :--- | | inpModelPath | Đường dẫn file model trong thư mục /Files | ai_model_v10.txt | | inpRiskPct | % Rủi ro trên mỗi lệnh | 1.0% | | inpMaxEquityDD | Cắt toàn bộ lệnh khi sụt giảm vốn đạt % | 15.0% | | inpUseADXFilter | Chỉ trade khi thị trường có xu hướng (ADX > 20) | true | | inpConfidenceLot| Tự động tăng lot khi AI cực kỳ tự tin | true | | inpUsePartialClose| Chốt lời từng phần 3 giai đoạn | true |
+Hệ thống được thiết kế theo mô hình **Decoupled Architecture** (Tách rời Não bộ và Thực thi) để đảm bảo độ ổn định và hiệu suất tối đa.
 
-⚠️ Critical Notes
-Data Direction: Bot yêu cầu dữ liệu mảng theo thứ tự $\text{Cũ} \rightarrow \text{Mới}$. Điều này đã được xử lý tự động trong code V10.
-Slippage: Kết quả backtest thường cao hơn thực tế. Hãy luôn sử dụng tài khoản Demo để kiểm tra độ trễ của Broker trước khi chạy Real.
-Model Update: Nên huấn luyện lại model mỗi 30 ngày để cập nhật đặc tính giá mới nhất của thị trường.
+### 1. Brain (Python AI Server)
+Đóng vai trò là trung tâm điều khiển, xử lý dữ liệu và đưa ra quyết định.
+- **Feature Engine**: Trích xuất đặc trưng từ giá OHLC, tính toán chỉ báo kỹ thuật (RSI, EMA, ATR...).
+- **Trainer**: Huấn luyện mô hình XGBoost dựa trên dữ liệu real-time từ MT5.
+- **Predictor**: Dự đoán xu hướng giá tiếp theo với độ tin cậy (Confidence Score).
+- **Gemini Engine**: Phân tích tin tức vĩ mô và tâm lý thị trường để lọc tín hiệu.
+- **FastAPI Server**: Cầu nối HTTP cung cấp tín hiệu cho MT5 với độ trễ cực thấp.
+
+### 2. Execution (MQL5 EA)
+Đóng vai trò là "tay chân", thực thi lệnh trực tiếp trên tài khoản giao dịch.
+- **WebRequest**: Gửi yêu cầu lấy tín hiệu từ Python Server.
+- **Order Management**: Quản lý vào lệnh, Stop Loss (SL), Take Profit (TP) và trailing stop.
+- **Real-time Monitoring**: Theo dõi nến M15 và thực thi lệnh tức thì.
+
+---
+
+## 🛠 Luồng Hoạt Động (Workflow)
+
+`MT5 Chart (XAUUSD)` $\xrightarrow{Request}$ `FastAPI Server` $\xrightarrow{Analyze}$ `XGBoost Model` $\rightarrow$ `Signal (BUY/SELL)` $\xrightarrow{Response}$ `MQL5 EA` $\rightarrow$ `Open Trade`
+
+---
+
+## 🚀 Hướng Dẫn Cài Đặt (Setup Guide)
+
+### 📦 Yêu cầu hệ thống
+- **Python**: 3.12 (Stable)
+- **Platform**: MetaTrader 5 (MT5)
+- **Thư viện chính**: `MetaTrader5`, `pandas_ta`, `xgboost`, `fastapi`, `uvicorn`, `google-generativeai`.
+
+### ⚙️ Các bước triển khai
+
+#### 1. Cấu hình Python Server
+```bash
+# Clone dự án
+git clone https://github.com/ndai0454-gif/Bot_V8.git
+cd GoldBotV9
+
+# Tạo và kích hoạt môi trường ảo
+python -m venv venv
+.\venv\Scripts\activate
+
+# Cài đặt dependencies
+pip install -r requirements.txt
+
+# Khởi động server
+python main.py
+```
+
+#### 2. Cấu hình MetaTrader 5
+1. Mở **Tools** $\rightarrow$ **Options** $\rightarrow$ **Expert Advisors**.
+2. Tích chọn $\checkmark$ **Allow Algo Trading**.
+3. Thêm URL vào danh sách WebRequest: `http://127.0.0.1:8000`.
+4. Copy `BotVang_V9.mq5` vào thư mục `MQL5/Experts`.
+5. Compile (F7) và gắn EA vào chart **XAUUSD, timeframe M15**.
+
+---
+
+## 📂 Cấu Trúc Thư Mục
+
+```text
+GoldBotV9/
+├── ai/
+│   ├── trainer.py          # Huấn luyện model
+│   ├── predictor.py        # Dự đoán tín hiệu
+│   ├── feature_engine.py   # Xử lý đặc trưng kỹ thuật
+│   ├── models/             # Lưu trữ file .pkl
+│   └── datasets/          # Lưu trữ dữ liệu lịch sử
+├── api/
+│   ├── webhook_server.py   # Server tiếp nhận request
+│   ├── gemini_engine.py     # Phân tích vĩ mô AI
+│   └── economic_calendar.py # Theo dõi tin tức kinh tế
+├── core/
+│   ├── execution_engine.py  # Quản lý thực thi lệnh
+│   ├── risk_engine.py       # Quản lý rủi ro & Lot size
+│   ├── trade_manager.py     # Quản lý vị thế
+│   └── strategy.pyx         # Chiến thuật tối ưu (Cython)
+├── mt5/
+│   ├── BotVang_V9.mq5       # EA điều phối chính
+│   └── ai_engine.cpp       # Cầu nối DLL (tùy chọn)
+└── main.py                 # Điểm khởi chạy hệ thống
+```
+
+---
+
+## ⚠️ Cảnh Báo Rủi Ro
+*Giao dịch vàng (XAUUSD) tiềm ẩn rủi ro cao. Bot này là một công cụ hỗ trợ dựa trên AI và không đảm bảo lợi nhuận 100%. Hãy thử nghiệm kỹ trên tài khoản **DEMO** trước khi giao dịch thực tế.*
+
+---
+**Developed by [ndai0454-gif](https://github.com/ndai0454-gif)**
+```
+
+### 💡 Gợi ý thêm cho bạn:
+1. **Thêm hình ảnh**: Nếu bạn có ảnh chụp màn hình Bot đang chạy hoặc biểu đồ tín hiệu, hãy tạo thư mục `img/` và chèn vào file MD bằng cú pháp `![Alt text](img/ten_anh.png)`.
+2. **File `requirements.txt`**: Để người khác (hoặc chính bạn khi cài máy mới) cài nhanh, hãy tạo file `requirements.txt` bằng lệnh:
+   ```powershell
+   pip freeze > requirements.txt
