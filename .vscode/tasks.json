@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build ai_engine DLL",
+      "type": "shell",
+      "command": "${workspaceFolder}\\scripts\\build_cpp.ps1",
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

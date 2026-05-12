@@ -1,0 +1,6 @@
+python/__pycache__/
+python/model.txt
+cpp_dll/.vs/
+cpp_dll/x64/
+mt5/Libraries/*.dll
+mt5/Files/model.txt
